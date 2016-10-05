@@ -42,7 +42,7 @@ def build_network(modinput): # (input_noiserate, weight_noiseinput):
     c_ca1_e2i_bonus=-0.3
     c_ca1_i2e_pbonus= -0.3
     c_ca1_i2i_pbonus= -0.3
-
+    
 
     """ Builds the network """
     nest.ResetKernel()
@@ -87,8 +87,7 @@ def build_network(modinput): # (input_noiserate, weight_noiseinput):
     theta_freq= 7.5  # theta freq: 6-10 Hz
     theta_offset=0.
     theta_phase=0.
-
-    # ################################################################################
+ 
     """ Create nodes """ 
 
     # Noise 
@@ -171,7 +170,7 @@ def build_network(modinput): # (input_noiserate, weight_noiseinput):
     return modoutput
 
 def scan_weights(time_ms):
-    """ Scan across params """
+    """ Scan/Grid search across params """
     # time_ms=1000.
     k=1
 
@@ -198,7 +197,7 @@ def scan_weights(time_ms):
         for s1 in range(len(scanpar[1])):
             # for s2 in range(len(scanpar[2])):
             #     for s3 in range(len(scanpar[3])):
-            print 'Run # ', k
+            print('Run # ', k)
             modinput={'input_noiserate':  input_noiserates[s0], 'weight_noiseinput': input_weights[s1]}
             
             # Run + readout    
@@ -206,16 +205,16 @@ def scan_weights(time_ms):
             nest.Simulate(time_ms) 
             d_spikerate[s0, s1] = float(nest.GetStatus(mo['sd_ca3e'],'n_events')[0])/mo['n_ca3e']/time_ms*1000.
             d_spikerate2[s0, s1] = (nest.GetStatus(mo['sd_ca3ei'],'n_events')[0]/mo['n_ca3i']/time_ms)*1000.
-            print '[CA3 e] Spike rate: ',  float(nest.GetStatus(mo['sd_ca3e'],'n_events')[0])/float(mo['n_ca3e'])/time_ms*1000., ' Hz'
-            print '[CA3 i] Spike rate: ',  float(nest.GetStatus(mo['sd_ca3ei'],'n_events')[0])/float(mo['n_ca3i'])/time_ms*1000., ' Hz'
-            print 'Rates: ',  d_spikerate[s0, s1], ' ' ,d_spikerate2[s0, s1]
-            k=k+1
+            print('[CA3 e] Spike rate: ',  float(nest.GetStatus(mo['sd_ca3e'],'n_events')[0])/float(mo['n_ca3e'])/time_ms*1000., ' Hz')
+            print('[CA3 i] Spike rate: ',  float(nest.GetStatus(mo['sd_ca3ei'],'n_events')[0])/float(mo['n_ca3i'])/time_ms*1000., ' Hz')
+            print('Rates: ',  d_spikerate[s0, s1], ' ' ,d_spikerate2[s0, s1])
+            k+=1
 
     # Return/output of scan
     scanout=locals()
     return scanout
 
-#%% Just run the mother
+#%% Just run the model
 def JustRun(time_ms):
 
     mo=build_network(1) # Setup + readout    
@@ -223,7 +222,7 @@ def JustRun(time_ms):
 
     # Print node performance 
     vm= nest.GetStatus(mo['vlt_ca3'],'events')[0] # CA3
-    print '[CA3 e] Spike rate: ',  float(nest.GetStatus(mo['sd_ca3e'],'n_events')[0])/float(mo['n_ca3e'])/time_ms*1000., ' Hz'
+    print('[CA3 e] Spike rate: ',  float(nest.GetStatus(mo['sd_ca3e'],'n_events')[0])/float(mo['n_ca3e'])/time_ms*1000., ' Hz')
     # print "[CA3 e] Last 10 timesteps Vm: ", vm['V_m'][-10:]
     # vm = nest.GetStatus(mo['vlt_ca3i'],'events')[0] 
     # print '[CA3 i] Spike rate: ',  float(nest.GetStatus(mo['sd_ca3ei'],'n_events')[0])/float(mo['n_ca3i'])/time_ms*1000., ' Hz'
@@ -508,7 +507,7 @@ def plot_spikesvolts(mo):
         # plt.xticks(range(0, fig_xmax_tfbins, fig_xtick_tfbins))
     except:
         pass
-    k=k+1
+    k+=1
 
     # Display !! 
     plt.subplots_adjust(left=0.05, bottom=None, right=0.99, top=None, wspace=0.7, hspace=0.5)
@@ -519,7 +518,7 @@ def spikes2powerspec_alltime(mo, nodename):
 
     # Get spike data in raster (row=neuron, col=timebin)
     exec("spikedetector=mo['sd_" + nodename + "']")
-    exec "n_neurons=len(nest.GetConnections(target=mo['sd_"+nodename + "']))"
+    exec("n_neurons=len(nest.GetConnections(target=mo['sd_"+nodename + "']))")
     ss=nest.GetStatus(spikedetector, 'events')
     spiket=np.round(ss[0]['times'])
     spikewho=ss[0]['senders']
@@ -625,7 +624,7 @@ overlap=0.5
 # Get spike data in raster (row=neuron, col=timebin)
 n_freq=int(timebin_ms/2+1)
 exec("spikedetector=mo['sd_" + nodename + "']")
-exec "n_neurons=len(nest.GetConnections(target=mo['sd_"+nodename + "']))"
+exec("n_neurons=len(nest.GetConnections(target=mo['sd_"+nodename + "']))")
 ss=nest.GetStatus(spikedetector, 'events')
 spiket=np.round(ss[0]['times'])
 spikewho=ss[0]['senders']
@@ -724,7 +723,7 @@ plt.show()
 nodename='ca3e'
 # Get spike data in raster (row=neuron, col=timebin)
 exec("spikedetector=mo['sd_" + nodename + "']")
-exec "n_neurons=len(nest.GetConnections(target=mo['sd_"+nodename + "']))"
+exec("n_neurons=len(nest.GetConnections(target=mo['sd_"+nodename + "']))")
 ss=nest.GetStatus(spikedetector, 'events')
 spiket=np.round(ss[0]['times'])
 spikewho=ss[0]['senders']
